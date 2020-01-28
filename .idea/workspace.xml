@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7a098422-b8b7-427a-8baa-1e8f05699a83" name="Default Changelist" comment="" />
+    <list default="true" id="7a098422-b8b7-427a-8baa-1e8f05699a83" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/production" beforeDir="false" afterPath="$PROJECT_DIR$/production" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roles/kubernetes_cluster/defaults/main.yml" beforeDir="false" afterPath="$PROJECT_DIR$/roles/setup_cluster/defaults/main.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roles/kubernetes_cluster/files/bar.txt" beforeDir="false" afterPath="$PROJECT_DIR$/roles/setup_cluster/files/bar.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roles/kubernetes_cluster/files/foo.sh" beforeDir="false" afterPath="$PROJECT_DIR$/roles/setup_cluster/files/foo.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roles/kubernetes_cluster/handlers/main.yml" beforeDir="false" afterPath="$PROJECT_DIR$/roles/setup_cluster/handlers/main.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roles/kubernetes_cluster/meta/main.yml" beforeDir="false" afterPath="$PROJECT_DIR$/roles/setup_cluster/meta/main.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roles/kubernetes_cluster/tasks/main.yml" beforeDir="false" afterPath="$PROJECT_DIR$/roles/setup_cluster/tasks/main.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roles/kubernetes_cluster/templates/ntp.conf.j2" beforeDir="false" afterPath="$PROJECT_DIR$/roles/setup_cluster/templates/ntp.conf.j2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roles/kubernetes_cluster/vars/main.yml" beforeDir="false" afterPath="$PROJECT_DIR$/roles/setup_cluster/vars/main.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/site.yml" beforeDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -13,25 +25,16 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/production">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="145">
-              <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
+            <state relative-caret-position="87">
+              <caret line="3" lean-forward="true" selection-start-line="3" selection-end-line="3" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/site.yml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="116">
-              <caret line="4" lean-forward="true" selection-start-line="4" selection-end-line="4" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/setup-k8s-cluster.yaml">
           <provider selected="true" editor-type-id="text-editor" />
         </entry>
@@ -48,6 +51,7 @@
         <option value="$PROJECT_DIR$/roles/kubernetes_cluster/tasks/main.yml" />
         <option value="$PROJECT_DIR$/roles/kubernetes_cluster/defaults/main.yml" />
         <option value="$PROJECT_DIR$/site.yml" />
+        <option value="$PROJECT_DIR$/production" />
       </list>
     </option>
   </component>
@@ -81,6 +85,11 @@
               <item name="k8s" type="b2602c69:ProjectViewProjectNode" />
               <item name="k8s" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="k8s" type="b2602c69:ProjectViewProjectNode" />
+              <item name="k8s" type="462c0819:PsiDirectoryNode" />
+              <item name="roles" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
@@ -88,6 +97,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="go.gopath.indexing.explicitly.defined" value="true" />
@@ -118,28 +128,27 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1580235264159</updated>
-      <workItem from="1580235266552" duration="602000" />
+      <workItem from="1580235266552" duration="871000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="602000" />
+    <option name="totallyTimeSpent" value="871000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="134" y="35" width="2426" height="1405" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="Image Layers" />
       <window_info id="Designer" />
       <window_info id="UI Designer" />
       <window_info id="Capture Tool" />
       <window_info id="Favorites" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24978614" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24978614" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" />
       <window_info anchor="bottom" id="Version Control" />
-      <window_info anchor="bottom" id="Terminal" visible="true" weight="0.32923618" />
+      <window_info active="true" anchor="bottom" id="Terminal" visible="true" weight="0.32923618" />
       <window_info anchor="bottom" id="Event Log" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32923618" />
@@ -166,21 +175,14 @@
     <entry file="file://$PROJECT_DIR$/dbservers.yml">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/roles/kubernetes_cluster/tasks/main.yml">
+    <entry file="file://$PROJECT_DIR$/roles/setup_cluster/tasks/main.yml">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/roles/kubernetes_cluster/defaults/main.yml">
+    <entry file="file://$PROJECT_DIR$/roles/setup_cluster/defaults/main.yml">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/webservers.yml">
       <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/production">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="145">
-          <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
-        </state>
-      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/site.yml">
       <provider selected="true" editor-type-id="text-editor">
@@ -191,6 +193,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/setup-k8s-cluster.yaml">
       <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/production">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="87">
+          <caret line="3" lean-forward="true" selection-start-line="3" selection-end-line="3" />
+        </state>
+      </provider>
     </entry>
   </component>
   <component name="masterDetails">
