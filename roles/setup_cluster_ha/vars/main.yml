@@ -2,6 +2,6 @@ kubernetes_version: "{{ ((k8s_version == None) | ternary('1.17', k8s_version)) i
 master_node_size: "{{ ((m_node_size == None) | ternary('t2.micro', m_node_size)) if m_node_size is defined else 't2.micro' }}"
 compute_node_size: "{{ ((c_node_size == None) | ternary('t2.micro', c_node_size)) if c_node_size is defined else 't2.micro' }}"
 dns_zone: "{{ ((zone == None) | ternary('k8s.dev.suhaspasricha.com', zone)) if zone is defined else 'k8s.dev.suhaspasricha.com' }}"
-compute_nodes: "{{ ((c_nodes == None) | ternary('2', c_nodes)) if c_nodes is defined else '2' }}"
+compute_nodes: "{{ ((c_nodes == None) | ternary('3', c_nodes)) if c_nodes is defined else '3' }}"
 ssh_key: "{{ ((key_file == None) | ternary('~/.ssh/kops', key_file)) if key_file is defined else '~/.ssh/kops.pub' }}"
 cluster_name: "{{ ((name == None) | ternary('k8s.dev.suhaspasricha.com', name)) if name is defined else 'k8s.dev.suhaspasricha.com' }}"

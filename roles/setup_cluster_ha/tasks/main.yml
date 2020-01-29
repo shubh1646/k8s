@@ -10,7 +10,7 @@
   command: "kops create cluster \
               --cloud=aws \
               --kubernetes-version={{ kubernetes_version }} \
-              --master-zones={{ az_info.availability_zones[0].zone_name }} \
+              --master-zones={{ az_info.availability_zones[0].zone_name }},{{ az_info.availability_zones[1].zone_name }},{{ az_info.availability_zones[2].zone_name }} \
               --zones={{ az_info.availability_zones[0].zone_name }},{{ az_info.availability_zones[1].zone_name }},{{ az_info.availability_zones[2].zone_name }} \
               --node-count={{ compute_nodes }} \
               --topology private \
