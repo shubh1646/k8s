@@ -1,0 +1,29 @@
+---
+- hosts: local
+  tasks:
+
+    - name: gather az facts
+      aws_az_info:
+      register: az_info
+
+    - name: print debug info
+      debug:
+        var: az_info
+    - debug:
+        msg: HA region
+      when: az_info.availability_zones | length > 3
+    - debug:
+        msg: Normal region
+      when: az_info.availability_zones | length < 3
+
+    - import_role:
+        name: setup_cluster_ha
+      vars:
+        az_info: "{{ az_info }}"
+      when: az_info.availability_zones | length > 3
+
+    - import_role:
+        name: setup_cluster
+        vars:
+          az_info: "{{ az_info }}"
+        when: az_info.availability_zones | length < 3

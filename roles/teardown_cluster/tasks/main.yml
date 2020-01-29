@@ -1,0 +1,13 @@
+- name: check for cluster
+  command: "kops get clusters"
+  register: clusters
+  ignore_errors: true
+
+#- debug:
+#    var: clusters
+
+- name: delete cluster
+  command: "kops delete cluster {{ cluster_name }} --yes"
+  when: "'{{ cluster_name }}' in clusters.stdout"
+
+
