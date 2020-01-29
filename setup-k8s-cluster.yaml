@@ -12,6 +12,9 @@
     - debug:
         msg: HA region
       when: az_info.availability_zones | length > 3
+    - debug:
+        msg: Normal region
+      when: az_info.availability_zones | length < 3
 
     - import_role:
         name: setup_cluster_ha

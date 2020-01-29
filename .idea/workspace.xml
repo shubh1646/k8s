@@ -2,28 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7a098422-b8b7-427a-8baa-1e8f05699a83" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/roles/setup_cluster_ha/defaults/main.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/roles/setup_cluster_ha/files/bar.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/roles/setup_cluster_ha/files/foo.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/roles/setup_cluster_ha/handlers/main.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/roles/setup_cluster_ha/meta/main.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/roles/setup_cluster_ha/tasks/main.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/roles/setup_cluster_ha/templates/ntp.conf.j2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/roles/setup_cluster_ha/vars/main.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/roles/teardown_cluster/defaults/main.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/roles/teardown_cluster/files/bar.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/roles/teardown_cluster/files/foo.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/roles/teardown_cluster/handlers/main.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/roles/teardown_cluster/meta/main.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/roles/teardown_cluster/tasks/main.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/roles/teardown_cluster/templates/ntp.conf.j2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/roles/teardown_cluster/vars/main.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/teardown-k8s-cluster.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roles/setup_cluster/tasks/main.yml" beforeDir="false" afterPath="$PROJECT_DIR$/roles/setup_cluster/tasks/main.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roles/setup_cluster/vars/main.yml" beforeDir="false" afterPath="$PROJECT_DIR$/roles/setup_cluster/vars/main.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/setup-k8s-cluster.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/setup-k8s-cluster.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -79,7 +58,8 @@
       <option name="presentableId" value="Default" />
       <updated>1580235264159</updated>
       <workItem from="1580235266552" duration="871000" />
-      <workItem from="1580238638566" duration="21304000" />
+      <workItem from="1580238638566" duration="21444000" />
+      <workItem from="1580332839543" duration="421000" />
     </task>
     <servers />
   </component>
@@ -87,10 +67,10 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="649" y="380" key="com.intellij.ide.util.TipDialog" timestamp="1580238646006">
+    <state x="649" y="380" key="com.intellij.ide.util.TipDialog" timestamp="1580332839886">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state x="649" y="380" key="com.intellij.ide.util.TipDialog/67.27.1853.1053@67.27.1853.1053" timestamp="1580238646006" />
+    <state x="649" y="380" key="com.intellij.ide.util.TipDialog/67.27.1853.1053@67.27.1853.1053" timestamp="1580332839886" />
   </component>
   <component name="masterDetails">
     <states>
