@@ -1,0 +1,1 @@
+cluster_name: "{{ ((name == None) | ternary('k8s.dev.suhaspasricha.com', name)) if name is defined else 'k8s.dev.suhaspasricha.com' }}"
