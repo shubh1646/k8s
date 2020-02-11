@@ -1,0 +1,20 @@
+---
+vpc_cidr_block: 10.1.0.0/16
+
+vpc_tags:
+    name: rds-vpc
+
+subnet_cidr_blocks:
+    a: 10.1.0.0/18
+    b: 10.1.64.0/18
+    c: 10.1.128.0/18
+
+availability_zones:
+  a: "{{lookup('env', 'AWS_REGION')}}a"
+  b: "{{lookup('env', 'AWS_REGION')}}b"
+  c: "{{lookup('env', 'AWS_REGION')}}c"
+
+vpc_subnet_group_names:
+    rds: csye7374-db-subnet_group
+
+rds_instance_name: csye7374-db

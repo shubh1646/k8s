@@ -1,0 +1,5 @@
+---
+  # k8s_requestor_vpc_cidr: 172.20.0.0/16
+  # k8s_requestor_vpc_id: vpc-01dd09b6dd727cf7e
+
+  k8s_requestor_vpc_name: "{{ name | default('none') }}"
