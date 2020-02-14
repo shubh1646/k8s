@@ -1,8 +1,125 @@
 - name: Create a k8s namespace
   k8s:
-    name: api
-    api_version: v1
-    kind: Namespace
     state: present
-    # labels: 
-    #    app: api 
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+          name: api
+          labels:
+              name: api    
+      
+- name: Create a secret 
+  k8s:
+    state: present
+    definition: 
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: mysecret
+        namespace: api
+      type: Opaque
+      data:
+        DB_USER: cG9zdGdyZXM=
+        DB_PASSWORD: bmV1MTIzNDU=   
+
+- name: Create a ConfigMap 
+  k8s:
+    state: present
+    definition:          
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: env-config
+        namespace: api
+      data:
+        WEBAPP_PORT: "3000"
+        DB_HOST_NAME: csye7374.cpmmicwozwjc.us-east-1.rds.amazonaws.com
+        DB_DATABASE_NAME: csye7374
+        DB_PORT: "5432" 
+
+- name: Create a ReplicaSet 
+  k8s:
+    state: present
+    definition:   
+      apiVersion: apps/v1
+      kind: ReplicaSet
+      metadata:
+        name: backend-replicaset
+        labels:
+          app: backend
+        namespace: api  
+      spec:
+        replicas: 3
+        selector:
+          matchLabels:
+            app: backend
+        template:
+          metadata:
+            labels:
+              app: backend
+          spec:
+            containers:
+            - name: backend
+              image: puneet2020/webapp-backend:version1
+              resources:
+                requests:
+                  memory: "64Mi"
+                  cpu: "250m"
+                limits:
+                  memory: "128Mi"
+                  cpu: "500m"
+              env:
+              - name: WEBAPP_PORT
+                valueFrom: 
+                  configMapKeyRef: 
+                    name: env-config
+                    key: WEBAPP_PORT
+              - name: DB_PASSWORD
+                valueFrom: 
+                  secretKeyRef: 
+                    name: mysecret
+                    key: DB_PASSWORD      
+              - name: DB_USER
+                valueFrom: 
+                  secretKeyRef: 
+                    name: mysecret
+                    key: DB_USER
+              - name: DB_HOST_NAME
+                valueFrom: 
+                  configMapKeyRef: 
+                    name: env-config
+                    key: DB_HOST_NAME
+              - name: DB_DATABASE_NAME
+                valueFrom: 
+                  configMapKeyRef: 
+                    name: env-config
+                    key: DB_DATABASE_NAME
+              - name: DB_PORT
+                valueFrom: 
+                  configMapKeyRef: 
+                    name: env-config
+                    key: DB_PORT 
+              ports: 
+                  - containerPort: 3000
+            imagePullSecrets:
+            - name: regcred   
+
+- name: Create a LoadBalancer 
+  k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: load-balancer
+      spec:
+        type: LoadBalancer
+        ports:
+          - protocol: TCP
+            port: 80
+            targetPort: 3000
+            name: lb
+        selectors: 
+            app: backend                             
+     
