@@ -56,6 +56,11 @@
 
 # -------------------------------------------------------------------------------------------
 
+- debug:
+    var: rds_acceptor_vpc_info.vpcs[0].id
+- debug:
+    var: rds_acceptor_route_table_info.route_tables[0].id
+
 - name: removing route from acceptor vpc
   ec2_vpc_route_table:
     vpc_id: "{{rds_acceptor_vpc_info.vpcs[0].id}}"

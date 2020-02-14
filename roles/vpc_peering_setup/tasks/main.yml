@@ -78,7 +78,7 @@
         vpc_peering_connection_id: "{{ vpc_peer.peering_id }}"
   register: requestor_route_table_info
 - debug:
-  var: "{{requestor_route_table_info}}"
+    var: "{{requestor_route_table_info}}"
 
 
 
