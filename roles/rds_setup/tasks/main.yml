@@ -1,124 +1,123 @@
 ---
-# Fetching k8s vpc info for rds security group
-  - name: fetching aws k8s vpc info
-    ec2_vpc_net_info:
-      filters:
-        tag:Name: "{{k8s_requestor_vpc_name}}"
-    register: k8s_requestor_vpc_info
-  - debug:
-      var: k8s_requestor_vpc_info.vpcs[0].id
-    when: k8s_requestor_vpc_info.vpcs|length > 0
+- name: fetching aws k8s vpc info
+  ec2_vpc_net_info:
+    filters:
+      tag:Name: "{{k8s_requestor_vpc_name}}"
+  register: k8s_requestor_vpc_info
+- debug:
+    var: k8s_requestor_vpc_info.vpcs[0].id
+  when: k8s_requestor_vpc_info.vpcs|length > 0
 
-  - name: creating aws vpc
-    ec2_vpc_net:
-      name: "{{vpc_tags.name}}"
-      cidr_block: "{{vpc_cidr_block}}"
-      tenancy: default
-      dns_hostnames: yes
-      dns_support: yes
-      multi_ok: no
-      state: present
-      tags:
-        Name: "{{vpc_tags.name}}"
-    register: rds_vpc_result
-  - debug:
-      var: rds_vpc_result.vpc.id
+- name: creating aws vpc
+  ec2_vpc_net:
+    name: "{{vpc_tags.name}}"
+    cidr_block: "{{vpc_cidr_block}}"
+    tenancy: default
+    dns_hostnames: yes
+    dns_support: yes
+    multi_ok: no
+    state: present
+    tags:
+      Name: "{{vpc_tags.name}}"
+  register: rds_vpc_result
+- debug:
+    var: rds_vpc_result.vpc.id
+
+- name: creating aws vpc igw
+  ec2_vpc_igw:
+    vpc_id: "{{rds_vpc_result.vpc.id}}"
+    state: present
+    tags:
+      Name: "{{vpc_tags.name}}-igw"
+  register: rds_vpc_igw_result
+- debug:
+    var: rds_vpc_igw_result.gateway_id
+
+- name: creating aws vpc subnets
+  ec2_vpc_subnet:
+    vpc_id: "{{rds_vpc_result.vpc.id}}"
+    az: "{{item.az}}"
+    cidr: "{{item.cidr}}"
+    map_public: yes
+    state: present
+    wait: yes
+    tags:
+      Name: "{{vpc_tags.name}}-{{item.name}}"
+  with_items:
+    - { az: "{{availability_zones.a}}", cidr: "{{subnet_cidr_blocks.a}}", name: "subnet-a"}
+    - { az: "{{availability_zones.c}}", cidr: "{{subnet_cidr_blocks.c}}", name: "subnet-c"}
+    - { az: "{{availability_zones.b}}", cidr: "{{subnet_cidr_blocks.b}}", name: "subnet-b"}
+  register: subnets
+- debug:
+    msg: "{{item.subnet.id}}"
+  with_items: "{{subnets.results}}"
+
+- name: creating aws vpc route table
+  ec2_vpc_route_table:
+    vpc_id: "{{rds_vpc_result.vpc.id}}"
+    state: present
+    routes:
+      - dest: 0.0.0.0/0
+        gateway_id: "{{rds_vpc_igw_result.gateway_id}}"
+    subnets:
+      - "{{subnets.results[0].subnet.id}}"
+      - "{{subnets.results[1].subnet.id}}"
+      - "{{subnets.results[2].subnet.id}}"
+    tags:
+      Name: "{{vpc_tags.name}}-public-route-table"
+  register: rds_route_table_result
+- debug:
+    msg: "{{item.route_table_association_id}}"
+  with_items: "{{rds_route_table_result.route_table.associations}}"
+
+- name: creating aws vpc subnet group for rds server
+  rds_subnet_group:
+    name: "{{vpc_subnet_group_names.rds}}"
+    description: 'subnet group for rds instance'
+    state: present
+    subnets:
+      - "{{subnets.results[0].subnet.id}}"
+      - "{{subnets.results[1].subnet.id}}"
+      - "{{subnets.results[2].subnet.id}}"
+  register: rds_subnet_group_result
+- debug:
+    msg: rds_subnet_group_result.subnet_group.name
+
+- name: creating aws vpc security group for rds server
+  ec2_group:
+    name: "{{vpc_tags.name}}-sg"
+    description: security group for rds server granting access to peered vpc
+    vpc_id: "{{rds_vpc_result.vpc.id}}"
+    state: present
+    rules:
+      - proto: tcp
+        from_port: 5432
+        to_port: 5432
+        cidr_ip: "{{k8s_requestor_vpc_info.vpcs[0].cidr_block}}"
+    tags:
+      Name: "{{vpc_tags.name}}-sg"
+  register: sg_result
+- debug:
+    var: sg_result.group_id
+
+- name: creating private access rds instance
+  rds:
+    backup_retention: 0
+    command: create
+    db_engine: postgres
+    db_name: csye7374
+    instance_name: "{{rds_instance_name}}"
+    instance_type: db.t2.micro
+    size: 20
+    username: team
+    password: Qwerty123
+    publicly_accessible: no
+    vpc_security_groups: "{{sg_result.group_id}}"
+    tags:
+      Application: recipe-backend-db
+    subnet: "{{rds_subnet_group_result.subnet_group.name}}"
+    wait: yes
+  register: rds_instance_result
+- debug:
+    var: rds_instance_result
   
-  - name: creating aws vpc igw
-    ec2_vpc_igw:
-      vpc_id: "{{rds_vpc_result.vpc.id}}"
-      state: present
-      tags:
-        Name: "{{vpc_tags.name}}-igw"
-    register: rds_vpc_igw_result
-  - debug:
-      var: rds_vpc_igw_result.gateway_id
-  
-  - name: creating aws vpc subnets
-    ec2_vpc_subnet:
-      vpc_id: "{{rds_vpc_result.vpc.id}}"
-      az: "{{item.az}}"
-      cidr: "{{item.cidr}}"
-      map_public: yes
-      state: present
-      wait: yes
-      tags:
-        Name: "{{vpc_tags.name}}-{{item.name}}"
-    with_items:
-      - { az: "{{availability_zones.a}}", cidr: "{{subnet_cidr_blocks.a}}", name: "subnet-a"}
-      - { az: "{{availability_zones.c}}", cidr: "{{subnet_cidr_blocks.c}}", name: "subnet-c"}
-      - { az: "{{availability_zones.b}}", cidr: "{{subnet_cidr_blocks.b}}", name: "subnet-b"}
-    register: subnets
-  - debug:
-      msg: "{{item.subnet.id}}"
-    with_items: "{{subnets.results}}"
-  
-  - name: creating aws vpc route table
-    ec2_vpc_route_table:
-      vpc_id: "{{rds_vpc_result.vpc.id}}"
-      state: present
-      routes:
-        - dest: 0.0.0.0/0
-          gateway_id: "{{rds_vpc_igw_result.gateway_id}}"
-      subnets:
-        - "{{subnets.results[0].subnet.id}}"
-        - "{{subnets.results[1].subnet.id}}"
-        - "{{subnets.results[2].subnet.id}}"
-      tags:
-        Name: "{{vpc_tags.name}}-public-route-table"
-    register: rds_route_table_result
-  - debug:
-      msg: "{{item.route_table_association_id}}"
-    with_items: "{{rds_route_table_result.route_table.associations}}"
-
-  - name: creating aws vpc subnet group for rds server
-    rds_subnet_group:
-      name: "{{vpc_subnet_group_names.rds}}"
-      description: 'subnet group for rds instance'
-      state: present
-      subnets:
-        - "{{subnets.results[0].subnet.id}}"
-        - "{{subnets.results[1].subnet.id}}"
-        - "{{subnets.results[2].subnet.id}}"
-    register: rds_subnet_group_result
-  - debug:
-      msg: rds_subnet_group_result.subnet_group.name
-
-  - name: creating aws vpc security group for rds server
-    ec2_group:
-      name: "{{vpc_tags.name}}-sg"
-      description: security group for rds server granting access to peered vpc
-      vpc_id: "{{rds_vpc_result.vpc.id}}"
-      state: present
-      rules:
-        - proto: tcp
-          from_port: 5432
-          to_port: 5432
-          cidr_ip: "{{k8s_requestor_vpc_info.vpcs[0].cidr_block}}"
-      tags:
-        Name: "{{vpc_tags.name}}-sg"
-    register: sg_result
-  - debug:
-      var: sg_result.group_id
-
-  - name: creating private access rds instance
-    rds:
-      backup_retention: 0
-      command: create
-      db_engine: postgres
-      db_name: csye7374
-      instance_name: "{{rds_instance_name}}"
-      instance_type: db.t2.micro
-      size: 20
-      username: team
-      password: Qwerty123
-      publicly_accessible: no
-      vpc_security_groups: "{{sg_result.group_id}}"
-      tags:
-        Application: recipe-backend-db
-      subnet: "{{rds_subnet_group_result.subnet_group.name}}"
-      wait: yes
-    register: rds_instance_result
-  - debug:
-      var: rds_instance_result
-    
