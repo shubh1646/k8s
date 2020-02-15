@@ -12,7 +12,7 @@
 
 
 - name: Create a docker secret 
-  shell: kubectl create secret docker-registry regcred -n ui --docker-server=https://index.docker.io/v1/ --docker-username=shubh1612 --docker-password=Myaccount1@ --docker-email=sharma.shubh@husky.neu.edu  
+  shell: kubectl create secret docker-registry regcred -n ui --docker-server=https://index.docker.io/v1/ --docker-username={{dockerhub_username}} --docker-password={{dockerhub_password}} --docker-email={{dockerhub_email}}
         
 - name : create a replica set 
   k8s:
@@ -36,14 +36,18 @@
             labels:
               app: frontend
           spec:
+            initContainers:
+              - name: frontend-init-container
+                image: busybox:1.28
+                command: ['sh', '-c', 'until nslookup backendlb.api.svc.cluster.local; do echo waiting for backend service; sleep 2; done;']
             containers:
               - name: frontend
-                image: shubh1612/fronta
+                image: "{{dockerhub_username}}/{{ui_image}}"
                 imagePullPolicy: Always
                 env:
                   - name: REACT_APP_BACKEND_ENDPOINT
-                    value: http://backendlb.api:3000
-                    # value: "{{backlb.resources[0].status.loadBalancer.ingress[0].hostname}}"
+                    # value: http://backendlb.api:3000
+                    value: "http://{{backlb.resources[0].status.loadBalancer.ingress[0].hostname}}:3000"
                 # resources:
                 #   requests:
                 #     memory: "128Mi"

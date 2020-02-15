@@ -9,6 +9,18 @@
           labels:
               name: api    
       
+# - name: Creating base64 value for db_username
+#   shell: echo -n "{{db_username}}" | base64
+#   register: db_username_secret
+- debug:
+    msg: "{{db_username | b64encode}}"
+
+# - name: Creating base64 value for db_password
+#   shell: echo -n "{{db_password}}" | base64
+#   register: db_password_secret
+- debug:
+    msg: "{{db_password| b64encode}}"
+
 - name: Create a secret 
   k8s:
     state: present
@@ -20,14 +32,16 @@
         namespace: api
       type: Opaque
       data:
-        DB_USER: cG9zdGdyZXM=
-        DB_PASSWORD: bmV1MTIzNDU=   
+        DB_USER: "{{db_username | b64encode}}"
+        DB_PASSWORD: "{{db_password| b64encode}}"
+      # data:
+      #   DB_USER: dGVhbQ==
+      #   DB_PASSWORD: UXdlcnR5MTIz
 
+# - name: Create a docker secret 
+#   shell: kubectl create secret docker-registry regcred -n api --docker-server=https://index.docker.io/v1/ --docker-username=shubh1612 --docker-password=Myaccount1@ --docker-email=sharma.shubh@husky.neu.edu
 - name: Create a docker secret 
-  shell: kubectl create secret docker-registry regcred -n api --docker-server=https://index.docker.io/v1/ --docker-username=shubh1612 --docker-password=Myaccount1@ --docker-email=sharma.shubh@husky.neu.edu  
-
-
-
+  shell: kubectl create secret docker-registry regcred -n api --docker-server=https://index.docker.io/v1/ --docker-username={{dockerhub_username}} --docker-password={{dockerhub_password}} --docker-email={{dockerhub_email}} 
 
 - name: Create a ConfigMap 
   k8s:
@@ -40,8 +54,10 @@
         namespace: api
       data:
         WEBAPP_PORT: "3000"
-        DB_HOST_NAME: csye7374.cpmmicwozwjc.us-east-1.rds.amazonaws.com
+        DB_HOST_NAME: csye7374-db.cz6rkkjdva3j.us-east-1.rds.amazonaws.com
         DB_DATABASE_NAME: csye7374
+        # DB_HOST_NAME: "{{rds_instance_result.instance.endpoint}}"
+        # DB_DATABASE_NAME: "{{rds_instance_result.instance.db_name}}"
         DB_PORT: "5432" 
 
 - name: Create a ReplicaSet 
@@ -67,14 +83,14 @@
           spec:
             containers:
             - name: backend
-              image: shubh1612/webback
-              resources:
-                requests:
-                  memory: "64Mi"
-                  cpu: "250m"
-                limits:
-                  memory: "128Mi"
-                  cpu: "500m"
+              image: "{{dockerhub_username}}/{{api_image}}"
+              # resources:
+              #   requests:
+              #     memory: "64Mi"
+              #     cpu: "250m"
+              #   limits:
+              #     memory: "128Mi"
+              #     cpu: "500m"
               env:
               - name: WEBAPP_PORT
                 valueFrom: 
@@ -142,22 +158,22 @@
             targetPort: 3000
         selector: 
             app: backend
-  register: backend_lb_dns_name  
+  # register: backend_lb_dns_name
   
-# - name :
-#   shell: |
-#     sleep 120   
+- name :
+  shell: |
+    sleep 120   
   
-# - name: Get an existing Service object
-#   k8s_info:
-#     api_version: v1
-#     kind: Service
-#     name: backendlb
-#     namespace: api
-#   register: backlb   
+- name: Get an existing Service object
+  k8s_info:
+    api_version: v1
+    kind: Service
+    name: backendlb
+    namespace: api
+  register: backlb   
 
-# - debug:
-#     msg: "{{backlb.resources[0].status.loadBalancer.ingress[0].hostname}}"
+- debug:
+    msg: "{{backlb.resources[0].status.loadBalancer.ingress[0].hostname}}"
 
 
      

@@ -4,4 +4,4 @@ compute_node_size: "{{ ((c_node_size == None) | ternary('t2.micro', c_node_size)
 dns_zone: "{{ ((zone == None) | ternary('k8s.dev.suhaspasricha.com', zone)) if zone is defined else 'k8s.dev.suhaspasricha.com' }}"
 compute_nodes: "{{ ((c_nodes == None) | ternary('3', c_nodes)) if c_nodes is defined else '3' }}"
 ssh_key: "{{ ((key_file == None) | ternary('~/.ssh/kops', key_file)) if key_file is defined else '~/.ssh/kops.pub' }}"
-cluster_name: "{{ ((name == None) | ternary('k8s.dev.suhaspasricha.com', name)) if name is defined else 'k8s.dev.suhaspasricha.com' }}"KOPS_STATE_STORE=s3://k8s.dev.suhaspasricha.com
+cluster_name: "{{ ((name == None) | ternary('k8s.dev.suhaspasricha.com', name)) if name is defined else 'k8s.dev.suhaspasricha.com' }}"
