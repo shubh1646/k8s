@@ -54,7 +54,7 @@
         namespace: api
       data:
         WEBAPP_PORT: "3000"
-        DB_HOST_NAME: csye7374-db.cz6rkkjdva3j.us-east-1.rds.amazonaws.com
+        DB_HOST_NAME: "{{ rds_endpoint }}"
         DB_DATABASE_NAME: csye7374
         # DB_HOST_NAME: "{{rds_instance_result.instance.endpoint}}"
         # DB_DATABASE_NAME: "{{rds_instance_result.instance.db_name}}"
