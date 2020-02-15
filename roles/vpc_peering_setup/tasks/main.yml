@@ -50,7 +50,7 @@
 - debug:
     var: "{{vpc_peering_accept}}"
 
-- name: adding route to acceptor vpc
+- name: adding route to acceptor(rds_cluster) vpc
   ec2_vpc_route_table:
     vpc_id: "{{rds_vpc_result.vpc.id}}"
     route_table_id: "{{ rds_route_table_result.route_table.id }}"
@@ -65,7 +65,7 @@
 - debug:
     var: "{{acceptor_route_table_info}}"
 
-- name: adding route to requestor vpc
+- name: adding route to requestor(k8s_cluster) vpc
   ec2_vpc_route_table:
     vpc_id: "{{k8s_requestor_vpc_info.vpcs[0].id}}"
     route_table_id: "{{k8s_requestor_route_table_info.route_tables[0].id}}"
