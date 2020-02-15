@@ -109,10 +109,8 @@
     instance_name: "{{rds_instance_name}}"
     instance_type: db.t2.micro
     size: 20
-    username: team
-    password: Qwerty123
-    # username: "{{db_username | default('team')}}"
-    # password: "{{db_password | default('Qwerty123')}}"
+    username: "{{db_username}}"
+    password: "{{db_password}}"
     publicly_accessible: no
     vpc_security_groups: "{{sg_result.group_id}}"
     tags:
