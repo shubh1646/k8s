@@ -162,7 +162,7 @@
   
 - name :
   shell: |
-    sleep 120   
+    sleep 180   
   
 - name: Get an existing Service object
   k8s_info:
