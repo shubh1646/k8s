@@ -1,7 +1,6 @@
 ---
 - hosts: local
   tasks:
-
     - name: gather az facts
       aws_az_info:
       register: az_info
@@ -27,3 +26,9 @@
       vars:
         az_info: "{{ az_info }}"
       when: az_info.availability_zones | length < 3
+
+    - import_role:
+        name: rds_setup
+        
+    - import_role:
+        name: vpc_peering_setup

@@ -1,0 +1,102 @@
+---
+- name: Create a k8s namespace
+  k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: ui
+        labels:
+          name: ui
+
+
+- name: Create a docker secret 
+  shell: kubectl create secret docker-registry regcred -n ui --docker-server=https://index.docker.io/v1/ --docker-username={{dockerhub_username}} --docker-password={{dockerhub_password}} --docker-email={{dockerhub_email}}
+        
+- name : create a replica set 
+  k8s:
+    state : present 
+    definition:
+      apiVersion: apps/v1
+      kind: ReplicaSet
+      metadata: 
+        name: frontend-replicaset
+        labels: 
+          app: frontend
+        namespace: ui
+      spec:
+        replicas: 3
+        selector:
+          matchLabels:
+            app: frontend
+        template:
+          metadata:
+            name: frontend
+            labels:
+              app: frontend
+          spec:
+            initContainers:
+              - name: frontend-init-container
+                image: busybox:1.28
+                command: ['sh', '-c', 'until nslookup backendlb.api.svc.cluster.local; do echo waiting for backend service; sleep 2; done;']
+            containers:
+              - name: frontend
+                image: "{{dockerhub_username}}/{{ui_image}}"
+                imagePullPolicy: Always
+                env:
+                  - name: REACT_APP_BACKEND_ENDPOINT
+                    # value: http://backendlb.api:3000
+                    value: "http://{{backlb.resources[0].status.loadBalancer.ingress[0].hostname}}:3000"
+                # resources:
+                #   requests:
+                #     memory: "128Mi"
+                #     cpu: "500m"
+                #   limits:
+                #     memory: "128Mi"
+                #     cpu: "500m"
+                ports: 
+                  - containerPort: 3000   
+                readinessProbe:
+                  httpGet:
+                    path: /
+                    port: 3000
+                  initialDelaySeconds: 10
+                  periodSeconds: 100
+                livenessProbe:
+                  httpGet:
+                    path: /
+                    port: 3000
+                  initialDelaySeconds: 10
+                  periodSeconds: 100
+            imagePullSecrets:
+              - name: regcred      
+    
+
+                
+      
+- name: Create a LoadBalancer 
+  k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: load-balancer
+        labels:
+          name: frontend
+        namespace: ui
+      spec:
+        type: LoadBalancer
+        ports:
+          - protocol: TCP
+            port: 3000
+            targetPort: 3000
+        selector: 
+            app: frontend                            
+    
+
+
+
+
+
