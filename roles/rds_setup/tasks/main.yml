@@ -111,6 +111,8 @@
     size: 20
     username: team
     password: Qwerty123
+    # username: "{{db_username | default('team')}}"
+    # password: "{{db_password | default('Qwerty123')}}"
     publicly_accessible: no
     vpc_security_groups: "{{sg_result.group_id}}"
     tags:
@@ -119,5 +121,5 @@
     wait: yes
   register: rds_instance_result
 - debug:
-    var: rds_instance_result
+    var: rds_instance_result.instance.endpoint
   

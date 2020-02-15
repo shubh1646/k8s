@@ -23,11 +23,19 @@ To teardown the cluster run:
 KOPS_STATE_STORE=s3://k8s.dev.suhaspasricha.com AWS_PROFILE=dev ansible-playbook teardown-k8s-cluster.yaml -i production --extra-vars="name=<your cluster name>"
 
 
-<!-- New Setup Method -->
+<!-- Deployment Setup -->
+ansible-playbook deploy-app.yaml -i production --extra-vars="db_username=team db_password=Qwerty123 dockerhub_username=cyrilsebastian1811 dockerhub_password=Onepiece181195@ dockerhub_email=sebastian.c@northeastern.edu ui_image=frontend api_image=backend"
+
+<!-- Deployment Pull Down -->
+kubectl delete namespace ui
+kubectl delete namespace api
+
+
+<!-- Infrastructure Setup -->
 export KOPS_STATE_STORE=s3://k8.dev.cyril-sebastian.com
 export AWS_PROFILE=dev
 export AWS_REGION=us-east-1
-ansible-playbook setup-k8s-cluster.yaml -i production --extra-vars="k8s_version=1.15.7 zone=k8.dev.cyril-sebastian.com name=k8.dev.cyril-sebastian.com"
+ansible-playbook setup-k8s-cluster.yaml -i production --extra-vars="k8s_version=1.15.7 m_node_size=t2.small c_node_size=t2.small zone=k8.dev.cyril-sebastian.com name=k8.dev.cyril-sebastian.com db_username=team db_password=Qwerty123"
 
-<!-- New Teardown -->
-AWS_REGION=us-east-1 AWS_PROFILE=dev ansible-playbook teardown-k8s-cluster.yaml -i production --extra-vars="name=k8.dev.cyril-sebastian.com" -vvv
+<!-- Infrastructure Teardown -->
+ansible-playbook teardown-k8s-cluster.yaml -i production --extra-vars="name=k8.dev.cyril-sebastian.com" -vvv
