@@ -1,0 +1,3 @@
+- name: Install metrics server helm chart
+  command: "helm install stable/metrics-server --generate-name --set args[0]='--kubelet-insecure-tls' --set args[1]='--kubelet-preferred-address-types=InternalIP'"
+  
