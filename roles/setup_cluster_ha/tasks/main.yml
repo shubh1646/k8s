@@ -23,11 +23,12 @@
               {{ cluster_name }}"
   when: "'{{ cluster_name }}' not in clusters.stdout"
 
-- name: set cluster variables
-  command: "kops set cluster {{ cluster_name }} spec.kubelet.authenticationTokenWebhook=true"  
 
-- name: set cluster variables
-  command: "kops set cluster {{ cluster_name }} spec.kubelet.authorizationMode=Webhook"  
+- name : set variables
+  shell : |
+    export KOPS_FEATURE_FLAGS=SpecOverrideFlag
+    kops set cluster {{ cluster_name }} spec.kubelet.authorizationMode=Webhook
+    kops set cluster {{ cluster_name }} spec.kubelet.authenticationTokenWebhook=true
 
 - name: deploy the cluster
   command: "kops update cluster {{ cluster_name }}  --yes"
