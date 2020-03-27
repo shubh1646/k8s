@@ -23,6 +23,12 @@
               {{ cluster_name }}"
   when: "'{{ cluster_name }}' not in clusters.stdout"
 
+- name: set cluster variables
+  command: "kops set cluster {{ cluster_name }} spec.kubelet.authenticationTokenWebhook=true"  
+
+- name: set cluster variables
+  command: "kops set cluster {{ cluster_name }} spec.kubelet.authorizationMode=Webhook"
+
 - name: deploy the cluster
   command: "kops update cluster {{ cluster_name }}  --yes"
 
@@ -32,4 +38,21 @@
   delay: 60
   register: result
   until: result.rc == 0
+
+- name: Create cluster role binding
+  k8s:
+    state: present
+    definition: 
+      apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      metadata:
+        name: kubelet-api-admin 
+      subjects:
+      - kind: User
+        name: kubelet-api
+        apiGroup: rbac.authorization.k8s.io
+      roleRef:
+        kind: ClusterRole
+        name: system:kubelet-api-admin
+        apiGroup: rbac.authorization.k8s.io 
 
