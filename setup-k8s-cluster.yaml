@@ -28,13 +28,13 @@
       # when: az_info.availability_zones | length < 3
 
     - import_role:
-        name: setup_metrics_server  
+        name: setup_metrics_server
 
     - import_role:
-        name: setup_autoscaler 
+        name: setup_autoscaler
 
     - import_role:
         name: rds_setup
-        
+
     - import_role:
         name: vpc_peering_setup

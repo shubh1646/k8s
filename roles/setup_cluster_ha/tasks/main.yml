@@ -32,6 +32,9 @@
 - name: edit the nodes instance group spec
   shell: "yq m -i -x -d3 kops.yaml ./files/ig_spec.yaml"
 
+- name: replace <YOUR CLUSTER NAME> in config
+  shell: "sed 's/<YOUR CLUSTER NAME>/{{ cluster_name }}/g' ./kops.yaml"
+
 - name: replace the cluster config
   command: "kops replace -f kops.yaml"  
 
