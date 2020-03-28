@@ -23,6 +23,22 @@
               {{ cluster_name }}"
   when: "'{{ cluster_name }}' not in clusters.stdout"
 
+- name: download the current cluster configuration
+  shell: "kops get --name {{ cluster_name }} -o yaml > ./kops.yaml"
+
+- name: edit the cluster spec
+  shell: "yq m -i -x -d0 kops.yaml ./files/cluster_spec.yaml"
+
+- name: edit the nodes instance group spec
+  shell: "yq m -i -x -d3 kops.yaml ./files/ig_spec.yaml"
+
+- name: replace <YOUR CLUSTER NAME> in config
+  shell: "sed 's/<YOUR CLUSTER NAME>/{{ cluster_name }}/g' ./kops.yaml"
+
+- name: replace the cluster config
+  command: "kops replace -f kops.yaml"  
+
+
 - name: deploy the cluster
   command: "kops update cluster {{ cluster_name }}  --yes"
 
@@ -32,4 +48,21 @@
   delay: 60
   register: result
   until: result.rc == 0
+
+- name: Create cluster role binding
+  k8s:
+    state: present
+    definition: 
+      apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      metadata:
+        name: kubelet-api-admin 
+      subjects:
+      - kind: User
+        name: kubelet-api
+        apiGroup: rbac.authorization.k8s.io
+      roleRef:
+        kind: ClusterRole
+        name: system:kubelet-api-admin
+        apiGroup: rbac.authorization.k8s.io 
 
