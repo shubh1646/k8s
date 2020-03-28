@@ -23,11 +23,18 @@
               {{ cluster_name }}"
   when: "'{{ cluster_name }}' not in clusters.stdout"
 
-- name: set cluster variables
-  command: "kops set cluster {{ cluster_name }} spec.kubelet.authenticationTokenWebhook=true"  
+- name: download the current cluster configuration
+  shell: "kops get --name {{ cluster_name }} -o yaml > ./kops.yaml"
 
-- name: set cluster variables
-  command: "kops set cluster {{ cluster_name }} spec.kubelet.authorizationMode=Webhook"  
+- name: edit the cluster spec
+  shell: "yq m -i -x -d0 kops.yaml ./files/cluster_spec.yaml"
+
+- name: edit the nodes instance group spec
+  shell: "yq m -i -x -d3 kops.yaml ./files/ig_spec.yaml"
+
+- name: replace the cluster config
+  command: "kops replace -f kops.yaml"  
+
 
 - name: deploy the cluster
   command: "kops update cluster {{ cluster_name }}  --yes"
